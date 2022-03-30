@@ -4,10 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="745.0" prefWidth="634.0"
-           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.example.Controller">
-   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="211.0" prefWidth="632.0">
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controller">
+   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="364.0" prefWidth="632.0">
       <Label layoutY="88.0" text="Number of Clients">
          <font>
             <Font size="17.0"/>
@@ -73,13 +73,10 @@
          </font>
       </Label>
       <ChoiceBox fx:id="strategyChoiceBox" layoutX="416.0" layoutY="86.0" prefWidth="150.0"/>
-      <Label fx:id="errorLabel" layoutX="19.0" layoutY="333.0" prefHeight="21.0" prefWidth="598.0">
+      <Label fx:id="errorLabel" layoutX="19.0" layoutY="333.0" prefHeight="31.0" prefWidth="598.0">
          <font>
             <Font size="17.0"/>
          </font>
       </Label>
    </AnchorPane>
-   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="184.0" prefWidth="632.0">
-      <ScrollPane layoutX="6.0" prefHeight="370.0" prefWidth="632.0"/>
-   </AnchorPane>
-</SplitPane>
+</AnchorPane>

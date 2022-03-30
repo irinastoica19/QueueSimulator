@@ -1,6 +1,5 @@
 package org.example.businessLogic;
 
-import org.example.SimulationView;
 import org.example.model.Server;
 import org.example.model.Task;
 
@@ -16,9 +15,8 @@ public class SimulationManager implements Runnable {
     private int maxArrivalTime;
     private int nrOfClients;
     private Scheduler scheduler;
-    private SimulationView simulationView;
     private final List<Task> generatedTasks = Collections.synchronizedList(new ArrayList<>());
-    private boolean validData;
+    private String dataError = "";
     private float averageServiceTime;
 
     public SimulationManager(String timeLimit, String minProcessingTime, String maxProcessingTime, String minArrivalTime, String maxArrivalTime, String nrOfClients, String nrOfQueues, String selectionPolicy){
@@ -36,15 +34,20 @@ public class SimulationManager implements Runnable {
             } else {
                 selectionPolicy1 = SelectionPolicy.SHORTEST_QUEUE;
             }
+            if (!checkTimeIntervals(this.timeLimit, this.minProcessingTime, this.maxProcessingTime, this.minArrivalTime, this.maxArrivalTime, this.nrOfClients, nrOfQueues1)){
+                throw new NegativeTimeException("Time interval not valid");
+            }
             scheduler = new Scheduler(nrOfQueues1, this.nrOfClients, this.timeLimit);
             scheduler.changeStrategy(selectionPolicy1);
             generateTasks();
             System.out.println(getWaitingClients());
-            simulationView = new SimulationView();
-            validData = true;
             this.run();
-        } catch(NumberFormatException | NullPointerException e){
-            validData = false;
+        } catch(NumberFormatException e1){
+            dataError = "Numbers only!";
+        } catch(NullPointerException e2){
+            dataError = "Empty fields!";
+        } catch(NegativeTimeException e3){
+            dataError = "Invalid time intervals or negative numbers!";
         }
     }
 
@@ -63,10 +66,6 @@ public class SimulationManager implements Runnable {
         averageServiceTime /= (float) nrOfClients;
     }
 
-    public boolean isValidData() {
-        return validData;
-    }
-
     @Override
     public void run() {
         int currentTime = 0;
@@ -79,7 +78,6 @@ public class SimulationManager implements Runnable {
                 }
             }
             log(currentTime);
-            simulationView.updateWaitingClients("");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -135,6 +133,24 @@ public class SimulationManager implements Runnable {
             writer.close();
         } catch(IOException e){
             e.printStackTrace();
+        }
+    }
+
+    boolean checkTimeIntervals(int timeLimit, int minProcessingTime, int maxProcessingTime, int minArrivalTime, int maxArrivalTime, int nrOfClients, int nrOfQueues){
+        if(timeLimit < 0 || minArrivalTime < 0 || maxArrivalTime < 0 || minProcessingTime < 0 || maxProcessingTime < 0 || nrOfClients < 0 || nrOfQueues < 0){
+            return false;
+        } else {
+            return maxArrivalTime <= timeLimit && minArrivalTime <= maxArrivalTime && minProcessingTime <= maxProcessingTime;
+        }
+    }
+
+    public String getDataError() {
+        return dataError;
+    }
+
+    public static class NegativeTimeException extends RuntimeException{
+        public NegativeTimeException(String errorMessage){
+            super(errorMessage);
         }
     }
 

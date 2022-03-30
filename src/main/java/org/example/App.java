@@ -15,14 +15,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Scene scene = new Scene(loadFXML(), 630, 750);
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("view.fxml"));
+        Parent root = fxmlLoader.load();
+        Scene scene = new Scene(root, 630, 370);
         stage.setScene(scene);
         stage.show();
-    }
-
-    private static Parent loadFXML() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("view" + ".fxml"));
-        return fxmlLoader.load();
     }
 
     public static void main(String[] args) {
