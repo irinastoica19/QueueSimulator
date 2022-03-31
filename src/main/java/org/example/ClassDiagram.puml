@@ -1,0 +1,96 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+Strategy <|.. ConcreteStrategyQueue
+Strategy <|.. ConcreteStrategyTime
+
+Strategy "1" <-- "1" Scheduler
+SimulationManager "1" --> "1" Scheduler
+Server "1" o-- "many" Task
+Scheduler "1" o-- "many" Server
+SimulationManager "1" *-- "many" Task
+
+interface Strategy {
+    +void addTask(ArrayList<Server> servers, Task task)
+}
+class Scheduler{
+    -servers : List<Server>
+    -strategy : Strategy
+    -running : AtomicBoolean
+    -start :  new AtomicBoolean
+    -timeLimit : int
+    -peakHour : int
+    -maxNrOfClients : int
+    -waitingTime : float
+    +void changeStrategy(SelectionPolicy policy)
+    +void dispatchTask(List<Server> servers, Task task)
+    +void start()
+    +void interrupt()
+    +void updateNrOfClients(int currentTime)
+    +float updateWaitingTime(float waitingTime)
+    +void run()
+}
+class ConcreteStrategyQueue{
+    +void addTask(ArrayList<Server> servers, Task task)
+}
+class ConcreteStrategyTime{
+    +void addTask(ArrayList<Server> servers, Task task)
+}
+class SimulationManager{
+    -timeLimit : int
+    -minProcessingTime : int
+    -maxProcessingTime : int
+    -minArrivalTime : int
+    -maxArrivalTime : int
+    -nrOfClients : int
+    -scheduler : Scheduler
+    -generatedTasks : List<Task>
+    -dataError : String
+    -averageServiceTime : float
+    +void generateTasks()
+    +void run()
+    +void log(int currentTime)
+    +void logStatistics()
+    +boolean checkTimeIntervals(...)
+}
+class Server {
+    -waitingPeriod : AtomicInteger
+    -tasks : BlockingQueue<Task>
+    -running : AtomicBoolean
+    +void run()
+    +void addTask(Task task)
+    +void interrupt()
+}
+class Task {
+    -ID : Integer
+    -arrivalTime : Integer
+    -serviceTime : Integer
+}
+
+class App {
+    +void start(Stage stage)
+    +static void main(String[] args)
+}
+
+class Controller {
+    Button startButton;
+    nrOfClientsTextField : TextField
+    nrOfQueuesTextField : TextField
+    simulationTimeTextField : TextField
+    minArrivalTimeTextField : TextFiel
+    maxArrivalTimeTextField : TextField
+    minServiceTimeTextField : TextField
+    maxServiceTextField : TextField
+    strategyChoiceBox : ChoiceBox<String>
+    errorLabel : Label
+    +void startSimulation()
+    +void initialize()
+}
+
+enum SelectionPolicy {
+SHORTEST_QUEUE
+SHORTEST_TIME
+}
+
+
+@enduml
